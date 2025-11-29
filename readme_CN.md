@@ -39,7 +39,7 @@
 3. **状态监控**：DIO9引脚用于接收模块中断信号，BUSY引脚实时反映模块工作状态
 
 ## 文件目录说明
-## 文件目录说明
+```text
 ├── ExpressLRS/                 # ExpressLRS相关代码目录
 │   └── src/                    # 源代码目录
 │       ├── user_defines        # ExpressLRS配置
@@ -55,7 +55,7 @@
 │   └── hardware/               # 硬件原理图
 └── README.md                   # 英文项目说明文件
 └── README_CN.md                # 中文项目说明文件
-
+```
 
 若需深入了解，请查看[ExpressLRS 官网](https://www.expresslrs.org/quick-start/getting-started/)
 

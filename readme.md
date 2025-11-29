@@ -39,6 +39,7 @@ This project is developed based on the ESP32 (PICO-D4) microcontroller, integrat
 3. **Status Monitoring**: The DIO9 pin is used to receive module interrupt signals, and the BUSY pin reflects the module's working status in real time.
 
 ## Directory Structure
+```text
 ├── ExpressLRS/                # ExpressLRS related code
 │   └── src/                   # Source code
 │       ├── user_defines       # ExpressLRS configuration
@@ -54,6 +55,8 @@ This project is developed based on the ESP32 (PICO-D4) microcontroller, integrat
 │   └── hardware/              # Schematics
 └── README.md                  # English documentation
 └── README_CN.md               # Chinese documentation
+```
+
 
 For more in-depth information, please refer to [ExpressLRS](https://www.expresslrs.org/quick-start/getting-started/)
 
