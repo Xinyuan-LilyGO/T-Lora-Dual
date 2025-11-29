@@ -39,21 +39,21 @@ This project is developed based on the ESP32 (PICO-D4) microcontroller, integrat
 3. **Status Monitoring**: The DIO9 pin is used to receive module interrupt signals, and the BUSY pin reflects the module's working status in real time.
 
 ## Directory Structure
-├── ExpressLRS/                 # ExpressLRS related code
-│   └── src/                    # Source code
-│       ├── user_defines        # ExpressLRS configuration
-│       ├── hardware/           # Hardware directory
-|          ├── RX/              # ExpressLRS receiver hardware IO mapping (T-ELRS LR1121 True Diversity.json)
-|          ├── TX/              # ExpressLRS transmitter hardware IO mapping
-|          ├── targets.json     # ExpressLRS hardware IO build target selection (choose 1.BAYCKRC 900/2400 Dual Band Gemini RX)
-│       ├── lib/                # ExpressLRS dependencies
-├── T-ELRS/                     # T-ELRS related code
-│   ├── src/                    # Source code
-│   ├── examples/               # Example code
-│   ├── firmware/               # Firmware
-│   ├── hardware/               # Schematics
-└── README.md                   # English documentation
-└── README_CN.md                # Chinese documentation
+├── ExpressLRS/                # ExpressLRS related code
+│   └── src/                   # Source code
+│       ├── user_defines       # ExpressLRS configuration
+│       ├── hardware/          # Hardware directory
+│       │   ├── RX/            # ExpressLRS receiver hardware IO mapping (T-ELRS LR1121 True Diversity.json)
+│       │   ├── TX/            # ExpressLRS transmitter hardware IO mapping
+│       │   └── targets.json   # ExpressLRS hardware IO build target selection (choose 1.BAYCKRC 900/2400 Dual Band Gemini RX)
+│       └── lib/               # ExpressLRS dependencies
+├── T-ELRS/                    # T-ELRS related code
+│   ├── src/                   # Source code
+│   ├── examples/              # Example code
+│   ├── firmware/              # Firmware
+│   └── hardware/              # Schematics
+└── README.md                  # English documentation
+└── README_CN.md               # Chinese documentation
 
 For more in-depth information, please refer to [ExpressLRS](https://www.expresslrs.org/quick-start/getting-started/)
 
@@ -67,21 +67,21 @@ For more in-depth information, please refer to [ExpressLRS](https://www.expressl
 ## Compilation
 ### ExpressLRS Compilation (PlatformIO only)
 1. Open the src subdirectory under ExpressLRS in VSCode.
-2. Select the device model first ![](image\image.png)![](image\image1.png)
+2. Select the device model first ![](./image/image.png)![](./image/image1.png)
 3. Then click build and upload. The first build may require downloading files and could be slow.
-![](image\image2.png)
+![](./image/image2.png)
 
 ### T-ELRS Compilation
 #### PlatformIO
-1. Open the T-ELRS directory in VSCode, then open the platformio file and uncomment the example to compile ![alt text](image\image3.png)
+1. Open the T-ELRS directory in VSCode, then open the platformio file and uncomment the example to compile ![alt text](./image/image3.png)
 2. Then click build and upload
-![](image\image2.png)
+![](./image/image2.png)
 
 #### Arduino IDE
 1. Move the lib directory under T-ELRS to the Arduino project libraries directory
-![alt text](image\image4.png)
+![alt text](./image/image4.png)
 2. Open the example under the examples directory with Arduino IDE
 3. Select the chip model and default configuration
-![alt text](image\image5.png)
-![alt text](image\image6.png)
+![alt text](./image/image5.png)
+![alt text](./image/image6.png)
 4. Click build and upload

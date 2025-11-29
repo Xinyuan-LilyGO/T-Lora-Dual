@@ -39,21 +39,23 @@
 3. **状态监控**：DIO9引脚用于接收模块中断信号，BUSY引脚实时反映模块工作状态
 
 ## 文件目录说明
+## 文件目录说明
 ├── ExpressLRS/                 # ExpressLRS相关代码目录
 │   └── src/                    # 源代码目录
 │       ├── user_defines        # ExpressLRS配置
 │       ├── hardware/           # 硬件目录
-|          ├── RX/              # ExpressLRS 接收机硬件IO对应文件(T-ELRS LR1121 True Diversity.json)
-|          ├── TX/              # ExpressLRS 发射机硬件IO对应文件
-|          ├── targets.josn     # ExpressLRS 选择硬件IO编译目标文件(编译选择 1.BAYCKRC 900/2400 Dual Band Gemini RX)
-│       ├── lib/                # ExpressLRS 依赖库
+│       │   ├── RX/              # ExpressLRS 接收机硬件IO对应文件(T-ELRS LR1121 True Diversity.json)
+│       │   ├── TX/              # ExpressLRS 发射机硬件IO对应文件
+│       │   └── targets.json     # ExpressLRS 选择硬件IO编译目标文件(编译选择 1.BAYCKRC 900/2400 Dual Band Gemini RX)
+│       └── lib/                # ExpressLRS 依赖库
 ├── T-ELRS/                     # T-ELRS相关代码目录
 │   ├── src/                    # 源代码目录
 │   ├── examples/               # 示例代码
 │   ├── firmware/               # 固件目录
-│   ├── hardware/               # 硬件原理图
+│   └── hardware/               # 硬件原理图
 └── README.md                   # 英文项目说明文件
 └── README_CN.md                # 中文项目说明文件
+
 
 若需深入了解，请查看[ExpressLRS 官网](https://www.expresslrs.org/quick-start/getting-started/)
 
@@ -67,21 +69,21 @@
 ## 编译
 ### ExpressLRS编译(只能Platfromio编译)
 1. 用vscode打开ExpressLRS目录下的src子目录
-2. 先选择设备型号![](image\image.png)![](image\image1.png)
+2. 先选择设备型号![](./image/image.png)![](./image/image1.png)
 3. 再点击编译上传，第一次编译需下载文件，可能会有点慢
-![](image\image2.png)
+![](./image/image2.png)
 
 ### T-ELRS编译
 #### Platfromio
-1. 用vscode打开T-ELRS目录,再打开platformio文件，取消注释要编译的例程![alt text](image\image3.png)
+1. 用vscode打开T-ELRS目录,再打开platformio文件，取消注释要编译的例程![alt text](./image/image3.png)
 2. 再点击编译上传
-![](image\image2.png)
+![](./image/image2.png)
 
 #### Arduino IDE
 1. 把T-ELR目录下的lib目录移动到Arduino项目依赖库目录下
-![alt text](image\image4.png)
+![alt text](./image/image4.png)
 2. 用Arduino IDE打开examples目录下的例程
 3. 选择芯片型号，选择默认配置
-![alt text](image\image5.png)
-![alt text](image\image6.png)
+![alt text](./image/image5.png)
+![alt text](./image/image6.png)
 4. 点击编译上传
