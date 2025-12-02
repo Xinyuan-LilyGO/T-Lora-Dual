@@ -24,12 +24,12 @@
 #define RADIO_AT2401_RX_2 9
 
 // The maximum power of LR1121 Sub 1G band can only be set to 22 dBm
-#define CONFIG_RADIO_FREQ 868.0
+#define CONFIG_RADIO_FREQ 2400.0
 #define CONFIG_RADIO_BW 250.0
 #define CONFIG_RADIO_SF 7
 #define CONFIG_RADIO_CR 5
 #define CONFIG_RADIO_SYSN 0x34
-#define CONFIG_RADIO_OUTPUT_POWER 22
+#define CONFIG_RADIO_OUTPUT_POWER 13
 #define CONFIG_RADIO_PERLEN 12
 
 #define BOOT_PIN 0
@@ -57,33 +57,33 @@ typedef enum
   RF_MODE_TX,
   RF_MODE_RX,
 } RF_Mode_t;
-RF_Mode_t RF_Mode = RF_MODE_TX;
+RF_Mode_t RF_Mode = RF_MODE_RX;
 
 #if defined(USING_LR1121)
 
 static const uint32_t rfSwitchPins_1[] = {
     RADIOLIB_LR11X0_DIO5,
     RADIOLIB_LR11X0_DIO6,
-    RADIOLIB_LR11X0_DIOx(RADIO_AT2401_RX_1) | RFSWITCH_PIN_FLAG,
-    RADIOLIB_LR11X0_DIOx(RADIO_AT2401_TX_1) | RFSWITCH_PIN_FLAG,
-    RADIOLIB_NC};
+    // RADIOLIB_LR11X0_DIOx(RADIO_AT2401_RX_1),
+    // RADIOLIB_LR11X0_DIOx(RADIO_AT2401_TX_1),
+    RADIOLIB_NC, RADIOLIB_NC, RADIOLIB_NC};
 
 static const uint32_t rfSwitchPins_2[] = {
     RADIOLIB_LR11X0_DIO5,
     RADIOLIB_LR11X0_DIO6,
-    RADIOLIB_LR11X0_DIOx(RADIO_AT2401_RX_2) | RFSWITCH_PIN_FLAG,
-    RADIOLIB_LR11X0_DIOx(RADIO_AT2401_TX_2) | RFSWITCH_PIN_FLAG,
-    RADIOLIB_NC};
+    // RADIOLIB_LR11X0_DIOx(RADIO_AT2401_RX_2),
+    // RADIOLIB_LR11X0_DIOx(RADIO_AT2401_TX_2),
+    RADIOLIB_NC, RADIOLIB_NC, RADIOLIB_NC};
 
 static const Module::RfSwitchMode_t rfswitch_table[] = {
     // mode              DIO5,DIO6,DIO_HF_RX,DIO_HF_TX
-    {LR11x0::MODE_STBY,  {LOW,  LOW,  LOW,  LOW}},
-    {LR11x0::MODE_RX,    {LOW,  HIGH, HIGH, LOW}},
-    {LR11x0::MODE_TX,    {HIGH, LOW,  LOW,  LOW}},
-    {LR11x0::MODE_TX_HP, {HIGH, LOW,  LOW,  LOW}},
-    {LR11x0::MODE_TX_HF, {LOW,  LOW,  LOW,  HIGH}},
-    {LR11x0::MODE_GNSS,  {LOW,  LOW,  LOW,  LOW}},
-    {LR11x0::MODE_WIFI,  {LOW,  LOW,  LOW,  LOW}},
+    {LR11x0::MODE_STBY, {LOW, LOW, LOW, LOW}},
+    {LR11x0::MODE_RX, {LOW, HIGH, HIGH, LOW}},
+    {LR11x0::MODE_TX, {HIGH, LOW, LOW, LOW}},
+    {LR11x0::MODE_TX_HP, {HIGH, LOW, LOW, LOW}},
+    {LR11x0::MODE_TX_HF, {LOW, LOW, LOW, HIGH}},
+    {LR11x0::MODE_GNSS, {LOW, LOW, LOW, LOW}},
+    {LR11x0::MODE_WIFI, {LOW, LOW, LOW, LOW}},
     END_OF_MODE_TABLE,
 };
 #endif
@@ -181,6 +181,7 @@ void radio_config(LR1121 &radio)
 
 void radio_TX(LR1121 &radio, uint8_t number)
 {
+  int16_t err;
   radio.finishTransmit();
   delay(1000);
 
@@ -188,9 +189,14 @@ void radio_TX(LR1121 &radio, uint8_t number)
   String str = "T-ELRS! Radio_" + String(number) + " #" + String(transmissionCounter++);
   Serial.printf("[Radio] Sending another packet ... %s\n", str.c_str());
 
-  radio_1_transmissionState = radio.startTransmit(str);
+  if (CONFIG_RADIO_FREQ > 1000.0)
+  {
+    radio.rf_hf_pin_control(LR11x0::MODE_TX_HF);
+  }
 
-  if (radio_1_transmissionState == RADIOLIB_ERR_NONE)
+  err = radio.startTransmit(str);
+
+  if (err == RADIOLIB_ERR_NONE)
   {
     Serial.println(F("success!"));
     for (int i = 0; i < NUM_LEDS; i++)
@@ -205,7 +211,7 @@ void radio_TX(LR1121 &radio, uint8_t number)
   else
   {
     Serial.print(F("failed, code "));
-    Serial.println(radio_1_transmissionState);
+    Serial.println(err);
   }
 }
 
@@ -264,21 +270,37 @@ void buttonPressed()
 void radio_tx1_setFlag(void)
 {
   radio_1_transmittedFlag = true;
+  if (CONFIG_RADIO_FREQ > 1000.0)
+  {
+    radio_1.rf_hf_pin_control(LR11x0::MODE_STBY);
+  }
 }
 
 void radio_tx2_setFlag(void)
 {
   radio_2_transmittedFlag = true;
+  if (CONFIG_RADIO_FREQ > 1000.0)
+  {
+    radio_2.rf_hf_pin_control(LR11x0::MODE_STBY);
+  }
 }
 
 void radio_rx1_setFlag(void)
 {
   radio_1_receivedFlag = true;
+  if (CONFIG_RADIO_FREQ > 1000.0)
+  {
+    radio_1.rf_hf_pin_control(LR11x0::MODE_STBY);
+  }
 }
 
 void radio_rx2_setFlag(void)
 {
   radio_2_receivedFlag = true;
+  if (CONFIG_RADIO_FREQ > 1000.0)
+  {
+    radio_2.rf_hf_pin_control(LR11x0::MODE_STBY);
+  }
 }
 
 void setup()
@@ -306,8 +328,9 @@ void setup()
   Serial.print(F("[Radio] Initializing ... "));
 
   int16_t state = radio_1.begin();
-  radio_1.setRfSwitchTable(rfSwitchPins_1, rfswitch_table);
   radio_config(radio_1);
+  radio_1.setRfHfPin(RADIO_AT2401_TX_1, RADIO_AT2401_RX_1);
+  radio_1.setRfSwitchTable(rfSwitchPins_1, rfswitch_table);
 
   LR11x0VersionInfo_t info;
   state = radio_1.getVersionInfo(&info);
@@ -321,17 +344,25 @@ void setup()
     Serial.print(F("failed!  "));
     Serial.println(state);
   }
-  radio_1.standby();
 
   if (RF_Mode == RF_MODE_TX)
   {
     radio_1.setPacketSentAction(radio_tx1_setFlag);
     Serial.print(F("[LR1110] Sending first packet ... "));
+
+    if (CONFIG_RADIO_FREQ > 1000.0)
+    {
+      radio_1.rf_hf_pin_control(LR11x0::MODE_TX_HF);
+    }
     radio_1_transmittedFlag = radio_1.startTransmit("T-ELRS!");
   }
   else if (RF_Mode == RF_MODE_RX)
   {
     radio_1.setPacketReceivedAction(radio_rx1_setFlag);
+    if (CONFIG_RADIO_FREQ > 1000.0)
+    {
+      radio_1.rf_hf_pin_control(LR11x0::MODE_RX);
+    }
     state = radio_1.startReceive();
     if (state == RADIOLIB_ERR_NONE)
     {
@@ -349,8 +380,9 @@ void setup()
   /********radio2*********/
   Serial.print(F("[Radio] Initializing ... "));
   state = radio_2.begin();
-  radio_2.setRfSwitchTable(rfSwitchPins_2, rfswitch_table);
   radio_config(radio_2);
+  radio_2.setRfHfPin(RADIO_AT2401_TX_2, RADIO_AT2401_RX_2);
+  radio_2.setRfSwitchTable(rfSwitchPins_2, rfswitch_table);
   state = radio_2.getVersionInfo(&info);
   Serial.printf("LR1121_radio_2 Version: %02X.%02X.%02X\n", info.hardware, info.device, info.fwMajor);
   if (state == RADIOLIB_ERR_NONE)
@@ -362,17 +394,24 @@ void setup()
     Serial.print(F("failed!  "));
     Serial.println(state);
   }
-  radio_2.standby();
 
   if (RF_Mode == RF_MODE_TX)
   {
     radio_2.setPacketSentAction(radio_tx2_setFlag);
     Serial.print(F("[LR1110] Sending first packet ... "));
+    if (CONFIG_RADIO_FREQ > 1000.0)
+    {
+      radio_1.rf_hf_pin_control(LR11x0::MODE_TX_HF);
+    }
     radio_2_transmittedFlag = radio_2.startTransmit("T-ELRS!");
   }
   else if (RF_Mode == RF_MODE_RX)
   {
     radio_2.setPacketReceivedAction(radio_rx2_setFlag);
+    if (CONFIG_RADIO_FREQ > 1000.0)
+    {
+      radio_2.rf_hf_pin_control(LR11x0::MODE_RX);
+    }
     state = radio_2.startReceive();
     if (state == RADIOLIB_ERR_NONE)
     {
@@ -429,12 +468,20 @@ void loop()
       if (radio_1_receivedFlag)
       {
         radio_1_receivedFlag = false;
+        if (CONFIG_RADIO_FREQ > 1000.0)
+        {
+          radio_1.rf_hf_pin_control(LR11x0::MODE_RX);
+        }
         radio_RX(radio_1, 1);
       }
 
       if (radio_2_receivedFlag)
       {
         radio_2_receivedFlag = false;
+        if (CONFIG_RADIO_FREQ > 1000.0)
+        {
+          radio_2.rf_hf_pin_control(LR11x0::MODE_RX);
+        }
         radio_RX(radio_2, 2);
       }
     }
@@ -497,8 +544,8 @@ void loop()
   }
 }
 
-/*
 /// Set AT2401 pins according to RF mode
+/*
 void set_at2401_pins(RF_Mode_t RF_Mode, uint8_t number)
 {
   switch (RF_Mode)
