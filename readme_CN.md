@@ -11,32 +11,43 @@
 | 状态指示 | LED       | GPIO5控制，工作状态指示                  |
 
 ## 引脚分配表
-| 功能模块       | 信号名称 | ESP32引脚 | 说明         |
-| -------------- | -------- | --------- | ------------ |
-| **LR1121-1**   | MISO     | 33        | SPI数据输入  |
-|                | MOSI     | 32        | SPI数据输出  |
-|                | SCK      | 25        | SPI时钟      |
-|                | CS       | 27        | 芯片选择     |
-|                | DIO9     | 37        | 中断信号     |
-|                | RST      | 26        | 模块复位     |
-|                | BUSY     | 36        | 状态输出     |
-| **LR1121-2**   | MISO     | 33        | SPI数据输入  |
-|                | MOSI     | 32        | SPI数据输出  |
-|                | SCK      | 25        | SPI时钟      |
-|                | CS       | 13        | 芯片选择     |
-|                | DIO9     | 34        | 中断信号     |
-|                | RST      | 21        | 模块复位     |
-|                | BUSY     | 39        | 状态输出     |
-| **AT2401接口** | TX1      | 14        | 射频开关控制 |
-|                | TX2      | 15        | 射频开关控制 |
-|                | RX1      | 10        | 射频开关控制 |
-|                | RX2      | 9         | 射频开关控制 |
-| **状态指示**   | LED      | 5         | SPI数据输入  |
+| 功能模块     | 信号名称 | ESP32引脚 | 说明        |
+| ------------ | -------- | --------- | ----------- |
+| **LR1121-1** | MISO     | 33        | SPI数据输入 |
+|              | MOSI     | 32        | SPI数据输出 |
+|              | SCK      | 25        | SPI时钟     |
+|              | CS       | 27        | 芯片选择    |
+|              | DIO9     | 37        | 中断信号    |
+|              | RST      | 26        | 模块复位    |
+|              | BUSY     | 36        | 状态输出    |
+| **LR1121-2** | MISO     | 33        | SPI数据输入 |
+|              | MOSI     | 32        | SPI数据输出 |
+|              | SCK      | 25        | SPI时钟     |
+|              | CS       | 13        | 芯片选择    |
+|              | DIO9     | 34        | 中断信号    |
+|              | RST      | 21        | 模块复位    |
+|              | BUSY     | 39        | 状态输出    |
+| **状态指示** | LED      | 5         | SPI数据输入 |
 
 ## 功能说明
 1. **双模块架构**：通过共享SPI总线（SCK/MOSI/MISO）连接两个LR1121模块，实现双频段并发通信
 2. **硬件隔离**：每个LR1121模块独立配置CS/RESET/BUSY信号，确保通信互不干扰
 3. **状态监控**：DIO9引脚用于接收模块中断信号，BUSY引脚实时反映模块工作状态
+
+```c
+//射频开关模式表
+static const Module::RfSwitchMode_t rfswitch_table[] = {
+    // mode               DIO5,  DIO6, DIO7, DIO8
+    {LR11x0::MODE_STBY,  { LOW,  LOW,  LOW,  LOW  }},
+    {LR11x0::MODE_RX,    { LOW,  HIGH, HIGH, LOW  }},
+    {LR11x0::MODE_TX,    { HIGH, LOW,  LOW,  LOW  }},
+    {LR11x0::MODE_TX_HP, { HIGH, LOW,  LOW,  LOW  }},
+    {LR11x0::MODE_TX_HF, { LOW,  LOW,  LOW,  HIGH }},
+    {LR11x0::MODE_GNSS,  { LOW,  LOW,  LOW,  LOW  }},
+    {LR11x0::MODE_WIFI,  { LOW,  LOW,  LOW,  LOW  }},
+    END_OF_MODE_TABLE,
+};
+```
 
 ## 文件目录说明
 ```text
@@ -67,12 +78,6 @@
 5. 烧录完成后按RESET按钮重启设备
 
 ## 编译
-### ExpressLRS编译(只能Platfromio编译)
-1. 用vscode打开ExpressLRS目录下的src子目录
-2. 先选择设备型号![](./image/image.png)![](./image/image1.png)
-3. 再点击编译上传，第一次编译需下载文件，可能会有点慢
-![](./image/image2.png)
-
 ### T-ELRS编译
 #### Platfromio
 1. 用vscode打开T-ELRS目录,再打开platformio文件，取消注释要编译的例程![alt text](./image/image3.png)
@@ -87,3 +92,11 @@
 ![alt text](./image/image5.png)
 ![alt text](./image/image6.png)
 4. 点击编译上传
+   
+
+### 固件ExpressLRS编译(只能Platfromio编译)
+1. 用vscode打开ExpressLRS目录下的src子目录
+2. 先选择设备型号![](./image/image.png)![](./image/image1.png)
+3. 再点击编译上传，第一次编译需下载文件，可能会有点慢
+![](./image/image2.png)
+
