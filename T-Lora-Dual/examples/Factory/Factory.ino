@@ -92,22 +92,6 @@ void setRainbowColor(int pixelIndex, int colorIndex);
 void radio_config(LR1121 &radio, RF_Mode_t rf_mode, float freq, float bw, uint8_t sf, uint8_t cr,
                   uint8_t sysn, int8_t outputPower, uint16_t perlen);
 
-void handleEvent(AceButton *button, uint8_t eventType, uint8_t buttonState)
-{
-  int state;
-  static uint8_t frameCounter = 0;
-  switch (eventType)
-  {
-  case AceButton::kEventClicked:
-    Serial.println("Clicked");
-    break;
-
-  case AceButton::kEventLongPressed:
-    Serial.println("Long Pressed");
-    break;
-  }
-}
-
 void radio_config(LR1121 &radio, RF_Mode_t rf_mode, float freq, float bw, uint8_t sf, uint8_t cr,
                   uint8_t sysn, int8_t outputPower, uint16_t perlen)
 {

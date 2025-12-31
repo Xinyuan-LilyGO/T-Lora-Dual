@@ -27,6 +27,7 @@ This project is developed based on the ESP32(PICO-D4) microcontroller, integrati
 |                      | RST         | 21        | Module reset     |
 |                      | BUSY        | 39        | Status output    |
 | **Status Indicator** | LED         | 5         | SPI data input   |
+| **Button**           | BOOT        | 0         |                  |
 
 ## Function Description
 1. **Dual Module Architecture**: Two LR1121 modules are connected through a shared SPI bus (SCK/MOSI/MISO) to achieve concurrent communication in multi-bands.
